@@ -1,0 +1,226 @@
+<link rel="stylesheet" href="chat.css">
+<link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+<script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+<py-env>
+    - pandas
+    - openpyxl
+    - paths:
+       - ./data.xlsx
+</py-env>
+<div id='bodybox'>
+  <div id='chatborder'>
+    <p id="chatlog16" class="chatlog">&nbsp;</p>
+    <p id="chatlog15" class="chatlog">&nbsp;</p>
+    <p id="chatlog14" class="chatlog">&nbsp;</p>
+    <p id="chatlog13" class="chatlog">&nbsp;</p>
+    <p id="chatlog12" class="chatlog">&nbsp;</p>
+    <p id="chatlog11" class="chatlog">&nbsp;</p>
+    <p id="chatlog10" class="chatlog">&nbsp;</p>
+    <p id="chatlog9" class="chatlog">&nbsp;</p>
+    <p id="chatlog8" class="chatlog">&nbsp;</p>
+    <p id="chatlog7" class="chatlog">&nbsp;</p>
+    <p id="chatlog6" class="chatlog">&nbsp;</p>
+    <p id="chatlog5" class="chatlog">&nbsp;</p>
+    <p id="chatlog4" class="chatlog">&nbsp;</p>
+    <p id="chatlog3" class="chatlog">&nbsp;</p>
+    <p id="chatlog2" class="chatlog">&nbsp;</p>
+    <p id="chatlog1" class="chatlog" >ROBO: What is your car model? For example: Honda, Toyota, Mercedes Benz, BMW ...</p>
+    <!--input type="text" name="chat" id="chatbox" placeholder="Hi there! Type here to talk to me." onfocus="placeHolder()" /-->
+    <form onsubmit="return false">
+      <input type="text" id="userInput" name="chat" value=""><br>
+      <input pys-onClick="getInput" type="submit" id="btn-form" value="submit">
+    </form>
+      <button id="clear" type="button" class="button is-danger" pys-onClick="clearbot">Re-Start Chat</button>
+  </div>
+
+
+  <p id="output" hidden></P>
+  <p id="counter" hidden>1</p>
+  <p id="question" hidden></p>
+  <p id="keys" hidden></p>
+  <br>
+  <br>
+<p>List of recommendations by the chatbot</p>
+<p id='csv'></p>
+<py-script>
+import pandas as pd
+import random
+import js
+
+def read_excel():
+    df = pd.read_excel('data.xlsx')
+
+    #df.head()
+    return df
+
+def carModels():
+    input1=[]
+    for index, row in df.iterrows():
+        #plot = row['type of service for the list of parts']
+
+        row['Car models']=str(row['Car models']).lower()
+        if row['Car models'] not in input1:
+            input1.append(row['Car models'])
+    return input1
+
+def componentList():
+    input2=[]
+    for index, row in df.iterrows():
+        #plot = row['type of service for the list of parts']
+
+        row['component list']=str(row['component list']).lower()
+        if row['component list'] not in input2:
+            input2.append(row['component list'])
+    return input2
+
+def getKeyWord(sentence):
+
+    for keyWord in input1:
+        if keyWord in sentence:
+            return keyWord
+    return None
+
+def getKeyWord1(sentence):
+
+    for keyWord in input2:
+        if keyWord in sentence:
+            return keyWord
+    return None
+
+
+def stochasticRecommender(df):
+    l=len(df)
+    count=l-10
+
+    if count < 0:
+
+        return df
+    else:
+        start=random.randint(1, count)
+        end  =start+10
+        return df[start:end]
+
+def startChat(*args,**kwargs):
+
+
+    if document.getElementById('question').innerHTML =="":
+      question = document.getElementById('chatlog1').innerHTML
+    else:
+      question = document.getElementById('question').innerHTML
+
+    document.getElementById('counter').innerHTML= int(document.getElementById('counter').innerHTML) + 2
+    cnt= document.getElementById('counter').innerHTML
+    cntInput=int(document.getElementById('counter').innerHTML)-1
+    #console.log(f'print q1: {q1}')
+    if question=="ROBO: What is your car model? For example: Honda, Toyota, Mercedes Benz, BMW ...":
+
+      user_response = document.getElementById('output').innerHTML
+
+      document.getElementById('chatlog'+str(cntInput)).innerHTML="Customer:"+user_response
+
+      user_response=user_response.lower()
+
+
+      if(user_response =="0" or user_response =="exit" or user_response =="bye" ):
+
+          c1=Element('chatlog'+cnt)
+          c1.write("ROBO:Thank you for chatting with me! If you have any further queries you may call our customer service office at +65 6789 6666")
+          document.getElementById('userInput').disabled = True
+          return False
+
+      user_response= getKeyWord(user_response)
+      if(user_response not in input1 ):
+          console.log(f'invalid input')
+
+          c1=Element('chatlog'+cnt)
+          c1.write("ROBO:Please enter a valid car model. For example: Honda, Toyota, Mercedes Benz, BMW ...")
+      else:
+          document.getElementById('question').innerHTML= "ROBO: What is the car component for repair? For example:Engine, Camera, Brake,Coolant,Wheel,Battery..."
+          document.getElementById('keys').innerHTML=document.getElementById('keys').innerHTML+ " "+ user_response
+          c1=Element('chatlog'+cnt)
+          c1.write("ROBO: What is the car component for repair? For example:Engine, Camera, Brake,Coolant,Wheel,Battery...")
+          return False
+    #second part
+
+    if question=="ROBO: What is the car component for repair? For example:Engine, Camera, Brake,Coolant,Wheel,Battery...":
+
+        user_response1= document.getElementById('output').innerHTML
+        document.getElementById('chatlog'+str(cntInput)).value=user_response1
+        user_response1=user_response1.lower()
+        user_response=  document.getElementById('keys').innerHTML.split()[0]
+
+
+        if(user_response1 =="0" or user_response1 =="exit" or user_response1 =="bye" ):
+            recommender=df[(df['Car models']==user_response)]
+
+            recommender=stochasticRecommender(recommender)
+            print("ROBO:There are the possible services for you car model: \n",recommender)
+            print("ROBO:Thank you for chatting with me!")
+
+            csv=Element('csv')
+            csv.write(recommender.head(10))
+            c1=Element('chatlog'+cnt)
+            c1.write("ROBO:Thank you for chatting with me!")
+            document.getElementById('userInput').disabled = True
+
+        user_response1=getKeyWord1(user_response1)
+        recommender=df[(df['Car models']==user_response) & (df['component list']==user_response1)]#['type of service']
+        if len(recommender)>=1:
+            recommender=stochasticRecommender(recommender)
+            print("ROBO: Here is the service recommendation:\n",recommender)
+            csv=Element('csv')
+            csv.write(recommender.head(10))
+            document.getElementById('userInput').disabled = True
+            return False
+        else:
+            print("ROBO:Invalid component list, please enter again!")
+            print("For example:Engine, Camera, Brake, Coolant, Wheel, Battery...")
+            c1=Element('chatlog'+cnt)
+            c1.write("ROBO:Invalid component list, please enter again! For example:Engine, Camera, Brake, Coolant, Wheel, Battery...")
+
+
+    random.shuffle(input1)
+    random.shuffle(input2)
+    return ""
+def clearbot(*args,**kwargs):
+  recommendation=Element('csv')
+  recommendation.clear()
+  document.getElementById('counter').innerHTML= 1
+  document.getElementById('keys').innerHTML= ""
+  document.getElementById('question').innerHTML= "ROBO: What is your car model? For example: Honda, Toyota, Mercedes Benz, BMW ..."
+  document.getElementById('chatlog1').innerHTML= "ROBO: What is your car model? For example: Honda, Toyota, Mercedes Benz, BMW ..."
+  document.getElementById('chatlog2').innerHTML= "&nbsp;"
+  document.getElementById('chatlog3').innerHTML= "&nbsp;"
+  document.getElementById('chatlog4').innerHTML= "&nbsp;"
+  document.getElementById('chatlog5').innerHTML= "&nbsp;"
+  document.getElementById('chatlog6').innerHTML= "&nbsp;"
+  document.getElementById('chatlog7').innerHTML= "&nbsp;"
+  document.getElementById('chatlog8').innerHTML= "&nbsp;"
+  document.getElementById('chatlog9').innerHTML= "&nbsp;"
+  document.getElementById('chatlog10').innerHTML= "&nbsp;"
+  document.getElementById('chatlog11').innerHTML= "&nbsp;"
+  document.getElementById('chatlog12').innerHTML= "&nbsp;"
+  document.getElementById('chatlog13').innerHTML= "&nbsp;"
+  document.getElementById('chatlog14').innerHTML= "&nbsp;"
+  document.getElementById('chatlog15').innerHTML= "&nbsp;"
+  document.getElementById('chatlog16').innerHTML= "&nbsp;"
+
+  document.getElementById('userInput').disabled = False
+  return ""
+
+
+def getInput(*args,**kwargs):
+
+  userInt=Element('output')
+  userInt.write(Element('userInput').value)
+  startChat(*args,**kwargs)
+  document.getElementById('userInput').value=""
+
+  return ""
+df=read_excel()
+input1=carModels()
+random.shuffle(input1)
+input2=componentList()
+random.shuffle(input2)
+#startChat()
+</py-script>
