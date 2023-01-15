@@ -35,10 +35,10 @@
             <div class="row row-cols-1 row-cols-md-2 g-4">
                 <div class="col">
                     <div class="card text-white bg-dark mb-3 border-0" >
-                        <img src="./images/restaurant.jpg" class="card-img-top" alt="image not provided" style="object-fit: cover; height: 30vh;">
+                        <img src="./images/sales.png" class="card-img-top" alt="image not provided" style="object-fit: cover; height: 30vh;">
                         <div class="card-body">
-                            <h5 class="card-title">Search for amazing food near you</h5>
-                            <p class="card-text">Discover Singapore's greatest, near you</p>
+                            <h5 class="card-title">Sales visualisation</h5>
+                            <p class="card-text">Find out how your company has been doing.</p>
                             <a class="btn btn-outline-light" onclick="getLocation()">Lets go</a>
                         </div>
 
@@ -46,17 +46,43 @@
                 </div>
                 <div class="col">
                     <div class="card text-white bg-dark mb-3 border-0" >
-                        <img src="./images/destination.jpg" class="card-img-top" alt="image not provided" style="object-fit: cover; height: 30vh;">
+                        <img src="./images/ML.jpg" class="card-img-top" alt="image not provided" style="object-fit: cover; height: 30vh;">
                         <div class="card-body">
-                            <h5 class="card-title">Going somewhere?</h5>
-                            <p class="card-text">Search here to find restaurants near your destination</p>
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control stretched-link" placeholder="Where are you going?" id="where">
-                            </div>
+                            <h5 class="card-title">Sales Forecast</h5>
+                            <p class="card-text">Find out how your company will be doing</p>
                             <a href="#" class="btn btn-outline-light" onclick="setGeo()">Lets go</a>
                         </div>
 
                     </div>
+                    </div>
+                    
+                </div>
+
+                <div class="container">
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col">
+                    <div class="card text-white bg-dark mb-3 border-0" >
+                        <img src="./images/reviews.jpg" class="card-img-top" alt="image not provided" style="object-fit: cover; height: 30vh;">
+                        <div class="card-body">
+                            <h5 class="card-title">Customer Reviews</h5>
+                            <p class="card-text">Find out how your company has been reviewed.</p>
+                            <a class="btn btn-outline-light" onclick="getLocation()">Lets go</a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card text-white bg-dark mb-3 border-0" >
+                        <img src="./images/chatbot.jpg" class="card-img-top" alt="image not provided" style="object-fit: cover; height: 30vh;">
+                        <div class="card-body">
+                            <h5 class="card-title">Management of Chatbot</h5>
+                            <p class="card-text">Manage your chatbot</p>
+                            <a href="#" class="btn btn-outline-light" onclick="setGeo()">Lets go</a>
+                        </div>
+
+                    </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>
