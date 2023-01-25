@@ -7,14 +7,14 @@
     $status = false;
 
     //Get parameters passed from login.php
-    
-    if( filter_var($_POST["email"], FILTER_VALIDATE_EMAIL) && $_POST['password'] !="" && $_POST['firstname']!="" && $_POST['lastname']!=""){
+
+    if( filter_var($_POST["email"], FILTER_VALIDATE_EMAIL) && $_POST['password'] !="" && $_POST['firstname']!="" && $_POST['lastname']!="" && $_POST['code']=="666"){
         $email = $_POST["email"];
         $password = $_POST["password"];
         $fname = $_POST["firstname"];
         $lname = $_POST["lastname"];
 
-        
+
             //check if user already has an existing account
             $dao = new UserDAO();
             $user_result = $dao->verifyUser($email);
@@ -40,7 +40,7 @@
                     echo $postJSON;
 
                 }
-                
+
                 else{
                     //User acccount creation is unsucessful
                     $result = ["status"=>$status,"msg"=>"Please try again"];
@@ -53,21 +53,21 @@
 
             }
 
-            
-        
 
-    
+
+
+
     }else{
          // create json string and send back to client
-        $result = ["status"=>$status,"msg"=>"Please ensure all fields are properly filled"];
+        $result = ["status"=>$status,"msg"=>"Please ensure all fields / 3 digit code are properly filled "];
         $postJSON = json_encode($result);
         echo $postJSON;
 
     }
-    
-    
-    
-    
-   
-    
+
+
+
+
+
+
 ?>

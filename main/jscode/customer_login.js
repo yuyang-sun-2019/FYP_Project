@@ -113,6 +113,7 @@ app.component("create-acc-component", {//vue component
       lname: "",
       email: "",
       pw: "",
+      code:"",
       alwaysActive: true,
       isDisabled: false,
     };
@@ -136,6 +137,7 @@ app.component("create-acc-component", {//vue component
       document.getElementById("inputlName").setAttribute("disabled", true);
       document.getElementById("inputEmail").setAttribute("disabled", true);
       document.getElementById("inputPassword").setAttribute("disabled", true);
+      document.getElementById("code").setAttribute("disabled", true);
 
       let url ="./process_register.php";
 
@@ -143,7 +145,8 @@ app.component("create-acc-component", {//vue component
         email: this.email,
         password: this.pw,
         firstname: this.fname,
-        lastname: this.lname
+        lastname: this.lname,
+        code:this.code
         })
         .then(response => {
         // process response.data
@@ -165,6 +168,7 @@ app.component("create-acc-component", {//vue component
           document.getElementById("inputlName").removeAttribute("disabled");
           document.getElementById("inputEmail").removeAttribute("disabled");
           document.getElementById("inputPassword").removeAttribute("disabled");
+          document.getElementById("code").removeAttribute("disabled");
 
           var alertPlaceholder = document.getElementById('liveAlertPlaceholder');
           var wrapper = document.createElement('div');
@@ -198,7 +202,7 @@ app.component("create-acc-component", {//vue component
            document.getElementById("inputlName").removeAttribute("disabled");
            document.getElementById("inputEmail").removeAttribute("disabled");
            document.getElementById("inputPassword").removeAttribute("disabled");
-
+           document.getElementById("code").removeAttribute("disabled");
           var alertPlaceholder = document.getElementById('liveAlertPlaceholder');
           var wrapper = document.createElement('div');
           var type = "danger";
@@ -228,7 +232,7 @@ app.component("create-acc-component", {//vue component
          document.getElementById("inputlName").removeAttribute("disabled");
          document.getElementById("inputEmail").removeAttribute("disabled");
          document.getElementById("inputPassword").removeAttribute("disabled");
-
+         document.getElementById("code").removeAttribute("disabled");
 
          var alertPlaceholder = document.getElementById('liveAlertPlaceholder');
          var wrapper = document.createElement('div');
@@ -247,6 +251,7 @@ app.component("create-acc-component", {//vue component
       //Empty out the create account form fields
       this.email = "";
       this.pw = "";
+      this.code=""
       this.fname="";
       this.lname = "";
       document.getElementById("liveAlertPlaceholder").innerHTML = "";
@@ -257,7 +262,7 @@ app.component("create-acc-component", {//vue component
   <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header">
-              <h5 class="modal-title" id="CustomerModalLabel">Create Customer Account</h5>
+              <h5 class="modal-title" id="CustomerModalLabel">Create Staff Account</h5>
               <button type="button" @click="close" v-bind:class="{ 'btn-close': alwaysActive, 'disabled': isDisabled }" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -274,9 +279,13 @@ app.component("create-acc-component", {//vue component
                       <label for="inputEmail" class="form-label">Email</label>
                       <input type="email" class="form-control" id="inputEmail" v-model="email" placeholder="hey@hotmail.com">
                   </div>
-                  <div class="col-md-12">
+                  <div class="col-md-9">
                       <label for="inputPassword" class="form-label">Password</label>
                       <input type="password" class="form-control" v-model="pw" id="inputPassword">
+                  </div>
+                  <div class="col-md-3">
+                      <label for="code" class="form-label">3 digit Code</label>
+                      <input type="text" class="form-control" v-model="code" id="code">
                   </div>
 
               </form>
