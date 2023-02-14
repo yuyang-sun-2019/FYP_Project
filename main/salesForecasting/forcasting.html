@@ -1,0 +1,165 @@
+<link rel="stylesheet" href="chat.css">
+<link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+<py-env>
+    - pandas
+    - numpy
+    - seaborn
+    - matplotlib
+    - scikit-learn
+    - scipy
+    - twarc
+    - plotly
+    - ssl
+    - openpyxl
+    - paths:
+       - ./motorvehiclepop2014_2022.xlsx
+       - ./COE_data.xlsx
+       - ./Covid-19_SG.xlsx
+</py-env>
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+      <div id="LR_carpop" class="col">
+
+      </div>
+
+      <div id="LR_COE" class="col">
+
+      </div>
+
+  </div>
+</div>
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+      <div id="LR_Covid19" class="col">
+
+      </div>
+  </div>
+</div>
+
+<py-script >
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import scipy
+import sklearn
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from scipy import stats
+
+
+def LR_carpop():
+  data0 = pd.read_excel('motorvehiclepop2014_2022.xlsx', sheet_name='final')
+  data0 = data0.dropna()
+  corr=sns.pairplot(data0)
+  lr=sns.lmplot(data=data0, x="Amount", y="  Cars")
+  X = data0[['  Cars']]
+  y = data0['Amount']
+  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=101)
+
+  x = data0['Amount']
+  y = data0['  Cars']
+
+  slope, intercept, r, p, se = stats.linregress(x, y)
+
+  def myfunc(x):
+    return slope * x + intercept
+  mymodel = list(map(myfunc, x))
+  fig, ax = plt.subplots()
+  plt.title("Car Population Chart")
+  plt.xlabel("Amount")
+  plt.ylabel("Car")
+  plt.scatter(x, y)
+  plt.plot(x, mymodel)
+  plt.show()
+
+  pyscript.write("LR_carpop",fig)
+
+def LR_COE():
+  data0 = pd.read_excel('COE_data.xlsx', sheet_name='final')
+  data0 = data0.dropna()
+  import seaborn as sns
+  lr=sns.lmplot(data=data0, x="Amount", y="COE")
+  X = data0[[ 'COE']]
+  y = data0['Amount']
+  from sklearn.model_selection import train_test_split
+  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=101)
+  from sklearn.linear_model import LinearRegression
+  from scipy import stats
+  x = data0['Amount']
+  y = data0['COE']
+
+  slope, intercept, r, p, std_err = stats.linregress(x, y)
+
+  def myfunc(x):
+    return slope * x + intercept
+
+  mymodel = list(map(myfunc, x))
+  fig, ax = plt.subplots()
+  plt.title("COE Chart")
+  plt.xlabel("Amount")
+  plt.ylabel("COE")
+  plt.scatter(x, y)
+  plt.plot(x, mymodel)
+  plt.show()
+  pyscript.write("LR_COE",fig)
+
+def LR_Covid19():
+  covid1 = pd.read_excel('Covid-19_SG.xlsx', sheet_name="Sheet13")
+  covid1 = covid1.dropna()
+  sales1 = pd.read_excel('Covid-19_SG.xlsx', sheet_name="Sheet14")
+  sales1 = sales1.dropna()
+  combined = {'date': covid1['year/month'],
+           'no. of cases': covid1['cases']}
+
+  covidsales = pd.DataFrame(combined)
+  covidsales['Sales'] = sales1['Amount']
+  covidsales = covidsales.dropna()
+  x = covidsales['date']
+  y = covidsales['Sales']
+  lr=sns.lmplot(data=covidsales, x="Sales", y="no. of cases")
+  X = covidsales[['no. of cases']]
+  y = covidsales[['Sales']]
+
+  from sklearn.model_selection import train_test_split
+  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
+                                                      random_state=101)
+  from sklearn.linear_model import LinearRegression
+  from scipy import stats
+
+
+
+  x = covidsales['no. of cases']
+  y = covidsales['Sales']
+  #print(y)
+
+  slope, intercept, r, p, std_err = stats.linregress(x, y)
+
+  #print(slope)
+  def myfunc(x):
+    return slope * x + intercept
+
+  mymodel = list(map(myfunc, x))
+  fig, ax = plt.subplots()
+  plt.title("Covid-19 Chart")
+  plt.xlabel("No of Cases")
+  plt.ylabel("Sales")
+  plt.scatter(x, y)
+  plt.plot(x, mymodel)
+  plt.show()
+
+  pyscript.write("LR_Covid19",fig)
+
+
+
+def main():
+  LR_carpop()
+  LR_COE()
+  LR_Covid19()
+main()
+</py-script>
+
+
+# python -m http.server
