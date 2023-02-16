@@ -39,7 +39,9 @@
                         <div class="card-body">
                             <h5 class="card-title">Sales visualisation</h5>
                             <p class="card-text">Find out how your company has been doing.</p>
-                            <a class="btn btn-outline-light" onclick="getLocation()">Lets go</a>
+                            <form action="sales_visual.php">
+  <button type="submit" class="btn btn-outline-light">Let's go</button>
+</form>
                         </div>
 
                     </div>
