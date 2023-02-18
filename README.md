@@ -38,3 +38,5 @@ git push origin master
 git stash (so that u dont lose any changes somehow)
 git pull origin main (get the latest changes from main branch)
 git stash apply
+
+python -m http.server

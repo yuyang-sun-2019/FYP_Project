@@ -52,12 +52,12 @@
                         <div class="card-body">
                             <h5 class="card-title">Sales Forecast</h5>
                             <p class="card-text">Find out how your company will be doing</p>
-                            <a href="#" class="btn btn-outline-light" onclick="setGeo()">Lets go</a>
+                            <a href="http://localhost:8000/main/salesForecasting/forcasting.html" class="btn btn-outline-light" onclick="setGeo()">Lets go</a>
                         </div>
 
                     </div>
                     </div>
-                    
+
                 </div>
 
                 <div class="container">
@@ -84,7 +84,7 @@
 
                     </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>

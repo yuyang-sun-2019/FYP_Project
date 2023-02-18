@@ -1,7 +1,15 @@
-<link rel="stylesheet" href="chat.css">
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+<style media="screen">
+  body {background-color: grey;}
+</style>
 <py-env>
     - pandas
     - numpy
@@ -17,9 +25,12 @@
        - ./motorvehiclepop2014_2022.xlsx
        - ./COE_data.xlsx
        - ./Covid-19_SG.xlsx
+       - ./Accidents.xlsx
+       - ./GoogleReview_SentimentScores.csv
 </py-env>
+<body >
 <div class="container">
-  <div class="row row-cols-1 row-cols-md-2 g-4">
+  <div class="row row-cols-1 row-cols-md-3 g-4">
       <div id="LR_carpop" class="col">
 
       </div>
@@ -27,17 +38,46 @@
       <div id="LR_COE" class="col">
 
       </div>
-
-  </div>
-</div>
-<div class="container">
-  <div class="row row-cols-1 row-cols-md-2 g-4">
       <div id="LR_Covid19" class="col">
 
       </div>
+
+  </div>
+</div>
+<br>
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+
+      <div id="LR_Accident1" class="col">
+
+      </div>
+      <div id="LR_Accident2" class="col">
+
+      </div>
+      <div id="LR_Accident3" class="col">
+
+      </div>
+
+  </div>
+</div>
+<br>
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+
+      <div id="LR_Sentiment1" class="col" >
+
+      </div>
+      <div id="LR_Sentiment2" class="col">
+
+      </div>
+      <div id="LR_Sentiment3" class="col">
+
+      </div>
+
   </div>
 </div>
 
+</body>
 <py-script >
 import numpy as np
 import pandas as pd
@@ -48,7 +88,9 @@ import sklearn
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from scipy import stats
-
+import plotly.graph_objects as go
+from twarc import Twarc2
+#from nrclex import NRCLex
 
 def LR_carpop():
   data0 = pd.read_excel('motorvehiclepop2014_2022.xlsx', sheet_name='final')
@@ -152,14 +194,98 @@ def LR_Covid19():
 
   pyscript.write("LR_Covid19",fig)
 
+def LR_Accident():
+  accidents = pd.read_excel('Accidents.xlsx', sheet_name="license")
+  accidents1 = accidents.fillna(accidents['threeA'].mean())
+  df = pd.read_excel('Accidents.xlsx', sheet_name="sales")
+  combined = {'Year': accidents1['Year'],
+           'Class': accidents1['All Classes']}
+  accident_df = pd.DataFrame(combined)
+  accident_df['Sales'] = df['sales']
+  accident_df = accident_df.dropna()
+  combined = {'Year': accidents1['Year'],
+           'three': accidents1['three']}
+  license_3 = pd.DataFrame(combined)
+  license_3['Sales'] = df['sales']
+  license_3 = license_3.dropna()
+  x = license_3['Sales']
+  y = license_3['three']
+  lr1 = sns.lmplot(data=license_3, x="Sales", y="three")
+  pyscript.write("LR_Accident1",lr1)
+
+  X = license_3[['Sales']]
+  y = license_3[['three']]
+
+  from sklearn.model_selection import train_test_split
+  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4,
+                                                      random_state=1)
+  import matplotlib.pyplot as plt
+  from scipy import stats
+
+  x = license_3['Sales']
+  y = license_3['three']
+
+  slope, intercept, r, p, std_err = stats.linregress(x, y)
+
+  def myfunc(x):
+    return slope * x + intercept
+
+  mymodel = list(map(myfunc, x))
+
+  from sklearn import linear_model
+  reg = linear_model.LinearRegression()
+  reg.fit(X_train, y_train)
+  slope_intercept = np.polyfit(x,y,1)
+
+  ###################################################
+  combined = {'Year': accidents1['Year'],
+           'threeA': accidents1['threeA']}
+  license_3A = pd.DataFrame(combined)
+  license_3A['Sales'] = df['sales']
+  license_3A = license_3A.dropna()
+  x = license_3A['Sales']
+  y = license_3A['threeA']
+  x = license_3A['Sales']
+  y = license_3A['threeA']
+  lr2 = sns.lmplot(data=license_3A, x="Sales", y="threeA")
+  pyscript.write("LR_Accident2",lr2)
+  #########################################################
+  x = license_3A['Sales']
+  y = license_3A['threeA']
+
+  slope, intercept, r, p, std_err = stats.linregress(x, y)
+
+  def myfunc(x):
+    return slope * x + intercept
+
+  mymodel = list(map(myfunc, x))
+  reg = linear_model.LinearRegression()
+  reg.fit(X_train, y_train)
+  slope_intercept = np.polyfit(x,y,1)
 
 
+  df2 = pd.read_excel('Accidents.xlsx', sheet_name="month_injuries")
+  x = df2['Injuries']
+  y = df2['Sales']
+  x = df2['Injuries']
+  y = df2['Sales']
+  lr3=sns.lmplot(data=df2, x="Injuries", y="Sales")
+  pyscript.write("LR_Accident3",lr3)
+
+def LR_Sentiment():
+
+  data2 = pd.read_csv('GoogleReview_SentimentScores.csv')
+  data2 = data2.dropna()
+  correlation = data2.corr()
+  lr1=sns.heatmap(correlation,xticklabels=correlation.columns,yticklabels=correlation.columns, cmap="YlGnBu")
+  pyscript.write("LR_Sentiment1",lr1.figure)
 def main():
   LR_carpop()
   LR_COE()
   LR_Covid19()
+  LR_Accident()
+  LR_Sentiment()
+
 main()
 </py-script>
-
-
-# python -m http.server
+</html>
